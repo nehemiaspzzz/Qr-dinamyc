@@ -1,20 +1,42 @@
-// Solución temporal usando un objeto en memoria
-const db = {
-    qrs: new Map(),
+const clientPromise = require('./mongodb');
+
+const dbClient = {
     run: async (query, params) => {
-        if (query.includes('INSERT')) {
-            db.qrs.set(params[0], { id: params[0], url: params[1] });
-            return { lastID: params[0] };
-        }
-        if (query.includes('UPDATE')) {
-            db.qrs.set(params[1], { id: params[1], url: params[0] });
-            return { changes: 1 };
+        try {
+            const client = await clientPromise;
+            const db = client.db('qr-dynamic');
+
+            if (query.includes('INSERT')) {
+                const result = await db.collection('qrs').insertOne({
+                    id: params[0],
+                    url: params[1],
+                    createdAt: new Date()
+                });
+                return { lastID: params[0] };
+            }
+            if (query.includes('UPDATE')) {
+                const result = await db.collection('qrs').updateOne(
+                    { id: params[1] },
+                    { $set: { url: params[0], updatedAt: new Date() } }
+                );
+                return { changes: result.modifiedCount };
+            }
+        } catch (error) {
+            console.error('Error en operación DB:', error);
+            throw error;
         }
     },
     get: async (query, params) => {
-        const [id] = params;
-        return db.qrs.get(id);
+        try {
+            const client = await clientPromise;
+            const db = client.db('qr-dynamic');
+            const [id] = params;
+            return await db.collection('qrs').findOne({ id });
+        } catch (error) {
+            console.error('Error en get:', error);
+            throw error;
+        }
     }
 };
 
-module.exports = db; 
+module.exports = dbClient; 

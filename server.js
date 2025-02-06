@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const qrRoutes = require('./routes/qr');
+const clientPromise = require('./config/mongodb');
+
 const app = express();
 
 // Configuración CORS
@@ -13,6 +15,18 @@ app.use(cors({
 
 app.use(express.json());
 
+// Middleware para verificar la conexión a MongoDB
+app.use(async (req, res, next) => {
+    try {
+        const client = await clientPromise;
+        req.dbClient = client;
+        next();
+    } catch (error) {
+        console.error('Error de conexión a MongoDB:', error);
+        res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    }
+});
+
 // Rutas API
 app.use('/api/qr', qrRoutes);
 
@@ -20,9 +34,10 @@ app.use('/api/qr', qrRoutes);
 app.get('/q/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const db = require('./config/db');
+        const client = await clientPromise;
+        const db = client.db('qr-dynamic');
         
-        const qr = await db.get('SELECT url FROM qrs WHERE id = ?', [id]);
+        const qr = await db.collection('qrs').findOne({ id });
         
         if (!qr) {
             return res.status(404).send('QR no encontrado');
