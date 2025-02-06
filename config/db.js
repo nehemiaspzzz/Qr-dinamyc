@@ -1,10 +1,9 @@
-const clientPromise = require('./mongodb');
+const { getDatabase } = require('./mongodb');
 
 const dbClient = {
     run: async (query, params) => {
         try {
-            const client = await clientPromise;
-            const db = client.db('qr-dynamic');
+            const db = await getDatabase();
 
             if (query.includes('INSERT')) {
                 const result = await db.collection('qrs').insertOne({
@@ -28,8 +27,7 @@ const dbClient = {
     },
     get: async (query, params) => {
         try {
-            const client = await clientPromise;
-            const db = client.db('qr-dynamic');
+            const db = await getDatabase();
             const [id] = params;
             return await db.collection('qrs').findOne({ id });
         } catch (error) {

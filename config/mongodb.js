@@ -1,24 +1,22 @@
 const { MongoClient } = require('mongodb');
 
-const uri = process.env.MONGODB_URI;
-if (!uri) {
-    throw new Error('Please add your Mongo URI to .env.local');
+if (!process.env.MONGODB_URI) {
+    throw new Error('Please add your Mongo URI to environment variables');
 }
 
-let client = null;
-let clientPromise = null;
+const client = new MongoClient(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
 
-if (process.env.NODE_ENV === 'development') {
-    // En desarrollo, usa una variable global para preservar la conexión entre recargas de HMR
-    if (!global._mongoClientPromise) {
-        client = new MongoClient(uri);
-        global._mongoClientPromise = client.connect();
+async function getDatabase() {
+    if (!client.isConnected()) {
+        await client.connect();
     }
-    clientPromise = global._mongoClientPromise;
-} else {
-    // En producción, es mejor crear una nueva conexión
-    client = new MongoClient(uri);
-    clientPromise = client.connect();
+    return client.db('qr-dynamic');
 }
 
-module.exports = clientPromise; 
+module.exports = {
+    getDatabase,
+    client
+}; 

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const qrRoutes = require('./routes/qr');
-const clientPromise = require('./config/mongodb');
+const { getDatabase } = require('./config/mongodb');
 
 const app = express();
 
@@ -15,18 +15,6 @@ app.use(cors({
 
 app.use(express.json());
 
-// Middleware para verificar la conexión a MongoDB
-app.use(async (req, res, next) => {
-    try {
-        const client = await clientPromise;
-        req.dbClient = client;
-        next();
-    } catch (error) {
-        console.error('Error de conexión a MongoDB:', error);
-        res.status(500).json({ error: 'Error de conexión a la base de datos' });
-    }
-});
-
 // Rutas API
 app.use('/api/qr', qrRoutes);
 
@@ -34,8 +22,7 @@ app.use('/api/qr', qrRoutes);
 app.get('/q/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const client = await clientPromise;
-        const db = client.db('qr-dynamic');
+        const db = await getDatabase();
         
         const qr = await db.collection('qrs').findOne({ id });
         
@@ -56,8 +43,13 @@ app.get('/q/:id', async (req, res) => {
 });
 
 // Ruta de prueba
-app.get('/test', (req, res) => {
-    res.json({ message: 'API funcionando correctamente' });
+app.get('/test', async (req, res) => {
+    try {
+        const db = await getDatabase();
+        res.json({ message: 'API y conexión a MongoDB funcionando correctamente' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    }
 });
 
 // Solo inicia el servidor en desarrollo
