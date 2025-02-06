@@ -3,8 +3,10 @@ const QRCode = require('qrcode');
 const crypto = require('crypto');
 const db = require('../config/db');
 
-// Cambia la URL base para que apunte directamente al servidor
-const BASE_URL = 'http://localhost:5000'; // Quita el /api/qr
+// URL base dinámica según el entorno
+const BASE_URL = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:5000';
 
 // Función para generar ID único
 const generateUniqueId = () => {

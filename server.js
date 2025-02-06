@@ -4,25 +4,14 @@ const path = require('path');
 const qrRoutes = require('./routes/qr');
 const app = express();
 
-// Configuración CORS (actualiza el origin con tu dominio de frontend en Vercel)
+// Configuración CORS
 app.use(cors({
-    origin: [
-        'http://localhost:3000',
-        'https://tu-frontend-desplegado.vercel.app'
-    ],
+    origin: '*', // En desarrollo, permite todos los orígenes
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
-
-// Servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Ruta de prueba
-app.get('/test', (req, res) => {
-    res.json({ message: 'Servidor funcionando' });
-});
 
 // Rutas API
 app.use('/api/qr', qrRoutes);
@@ -51,7 +40,12 @@ app.get('/q/:id', async (req, res) => {
     }
 });
 
-// Para Vercel
+// Ruta de prueba
+app.get('/test', (req, res) => {
+    res.json({ message: 'API funcionando correctamente' });
+});
+
+// Solo inicia el servidor en desarrollo
 if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
@@ -59,5 +53,4 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-// Exportar para Vercel
-module.exports = app;
+module.exports = app; 

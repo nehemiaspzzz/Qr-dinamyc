@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './AdminPanel.css';
 
-const API_URL = 'http://localhost:5000/api/qr';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/qr';
 
 function AdminPanel() {
   const [qrId, setQrId] = useState('');
