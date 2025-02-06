@@ -1,0 +1,129 @@
+.admin-panel {
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-title {
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #4a5568;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.input-field {
+  padding: 10px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  border-color: #4299e1;
+  outline: none;
+}
+
+.current-url {
+  padding: 12px;
+  background: #f7fafc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.url-display {
+  color: #2b6cb0;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.update-button {
+  padding: 12px;
+  background: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.update-button:hover:not(:disabled) {
+  background: #3182ce;
+}
+
+.update-button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+.error-message {
+  padding: 12px;
+  background: #fed7d7;
+  color: #c53030;
+  border-radius: 6px;
+  margin-top: 12px;
+}
+
+.success-message {
+  padding: 12px;
+  background: #c6f6d5;
+  color: #2f855a;
+  border-radius: 6px;
+  margin-top: 12px;
+}
+
+.updated-qr-container {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f7fafc;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.updated-qr-container h3 {
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.updated-qr-container .qr-image {
+  width: 200px;
+  height: 200px;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.updated-qr-container .download-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #48bb78;
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.updated-qr-container .download-button:hover {
+  background: #38a169;
+} 

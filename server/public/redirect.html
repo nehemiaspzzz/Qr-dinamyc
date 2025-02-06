@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redireccionando...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f7fafc;
+        }
+        .loader {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader">
+        <div class="spinner"></div>
+        <p>Redireccionando...</p>
+    </div>
+
+    <script>
+        // Obtener el ID del QR de la URL
+        const qrId = window.location.pathname.split('/').pop();
+        
+        // Función para obtener y redirigir
+        async function redirect() {
+            try {
+                // Usa la ruta correcta de la API
+                const response = await fetch(`/api/qr/info/${qrId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    let url = data.url;
+                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                        url = 'https://' + url;
+                    }
+                    window.location.href = url;
+                } else {
+                    document.body.innerHTML = '<p>Error: QR no encontrado</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.body.innerHTML = '<p>Error al obtener la URL</p>';
+            }
+        }
+
+        // Ejecutar la redirección
+        redirect();
+    </script>
+</body>
+</html> 
